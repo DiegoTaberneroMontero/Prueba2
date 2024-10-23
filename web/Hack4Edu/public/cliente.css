@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px;
+    margin-right: 64px;
+    margin-left: 100px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* Hace que los hijos estén en fila */
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0;
+    position: relative;
+    /* Necesario para posicionar el botón de manera absoluta dentro del contenedor */
+}
+
+header {
+    background-color: rgb(41, 63, 80);
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    /* Alinea el contenido a la izquierda */
+    align-items: center;
+    /* Alinea verticalmente al centro */
+    color: white;
+    font-size: 2em;
+    font-family: Arial, sans-serif;
+}
+
+header img {
+    width: 125px;
+    margin: 25px;
+    margin-left: 60px;
+}
+
+.file-explorer {
+    width: 250px;
+    height: 100%;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 30px solid rgb(74, 109, 132, 85);
+    position: relative;
+    /* Necesario para posicionar el rectángulo detrás */
+    margin: 0px;
+    overflow-y: scroll;
+    flex-shrink: 0;
+}
+
+.file-explorer::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background-color: rgba(135, 206, 250, 0.5);
+    /* Color azul con transparencia */
+    z-index: -1;
+    /* Coloca el rectángulo detrás del contenido del explorador de archivos */
+    border-radius: 10px;
+    /* Opcional: para redondear los bordes del rectángulo */
+}
+
+.file-explorer ul {
+    list-style-type: none;
+    /* Elimina las viñetas */
+    padding-left: 20px;
+    /* Añade espacio a la izquierda para anidar */
+}
+
+.file-explorer li {
+    cursor: pointer;
+}
+
+.file-explorer .directory::before {
+    content: '📂';
+    /* Icono de carpeta */
+    margin-right: 5px;
+}
+
+.file-explorer li:hover {
+    background-color: #d6d6d6;
+    /* Fondo al pasar el cursor */
+}
+
+.logout-button {
+    background-color: #4A6D84;
+    /* Azul oscuro */
+    color: #ffffff;
+    /* Blanco */
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 100px;
+    cursor: pointer;
+    border: none;
+    height: 20%;
+    width: 20%;
+    margin-right: 50px;
+    padding-left: 5px;
+}
+
+.logout-button:hover {
+    background-color: #83bde3;
+    /* Azul claro al pasar el cursor */
+}
+
+.logout-button img {
+    width: 25px;
+    height: 25px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#upload-form {
+    margin-top: 20px;
+}
+
+#file-input {
+    margin-right: 10px;
+}
+
+button {
+    background-color: #1E3A8A;
+    /* Azul oscuro */
+    color: #ffffff;
+    /* Blanco */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3B82F6;
+    /* Azul claro al pasar el cursor */
+}
+
+.upload-container {
+    background-color: rgb(53, 81, 101);
+    width: 100%;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: end;
+    /* Alinea el contenido a la derecha */
+    align-items: center;
+    /* Alinea verticalmente al centro */
+    color: white;
+    font-size: 2em;
+    font-family: Arial, sans-serif;
+}
+
+#execute-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
+    /* Asegura que el botón esté por encima de otros elementos */
+}
+
+#execute-button:hover {
+    background-color: #0056b3;
+}

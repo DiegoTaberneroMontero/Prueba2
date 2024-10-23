@@ -1,0 +1,139 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="generator" content="Aspose.Words for .NET 24.9.0" />
+    <title>Página de Clientes</title>
+    <link rel="stylesheet" href="/cliente.css">
+    <link rel="shortcut icon" href="/icon.png">
+</head>
+
+<body>
+    <header class="header">
+        <img src="/logo.png" alt="Logo">
+        <input type="text" id="search-input" placeholder="Buscar archivo..." onkeyup="filterFiles()">
+        <button class="logout-button" id="cerrarSesionButton">
+            <img src="perfil.png" alt="Icono de usuario">
+            <span>Cerrar sesión</span>
+        </button>
+    </header>
+    <div class="container">
+        <div class="file-explorer">
+            <ul id="file-list"></ul>
+        </div>
+        <div id="file-content" style="white-space: pre-wrap; margin: 120px; margin-bottom: 70px; margin-top: 70px; background-color: aliceblue; overflow-y: scroll;"></div>
+        <button id="execute-button" onclick="executeCommand()">Ejecutar Comando</button>
+    </div>
+    <div class="upload-container">
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="file-upload" name="file">
+            <button type="button" onclick="uploadFile()">Subir Archivo</button>
+        </form>
+    </div>
+
+    <script>
+        async function fetchFiles() {
+            console.log('Buscando archivos...');
+            const response = await fetch('/files');
+            const files = await response.json();
+            console.log('Archivos encontrados:', files);
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = ''; // Limpiar la lista antes de volver a llenarla
+
+            function createFileTree(files, parent) {
+                files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = file.name; // Mostrar solo el nombre del archivo
+                    li.dataset.fileName = file.path; // Añade un dataset para facilitar la búsqueda
+                    if (file.type === 'directory') {
+                        li.classList.add('directory');
+                        const ul = document.createElement('ul');
+                        ul.style.display = 'none';
+                        li.appendChild(ul);
+                        li.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+                        });
+                        createFileTree(file.children, ul);
+                    } else {
+                        li.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            fetchFileContent(file.path); // Usar la ruta completa para obtener el contenido del archivo
+                        });
+                    }
+                    parent.appendChild(li);
+                });
+            }
+
+            createFileTree(files, fileList);
+        }
+
+        async function fetchFileContent(filePath) {
+            console.log(`Solicitando contenido del archivo: ${filePath}`);
+            const response = await fetch(`/file?name=${encodeURIComponent(filePath)}`);
+            console.log(`Estado de la respuesta: ${response.status}, statusText: ${response.statusText}`);
+            if (response.ok) {
+                const fileContent = await response.text();
+                console.log('Contenido del archivo obtenido:', fileContent);
+                const fileContentDiv = document.getElementById('file-content');
+                fileContentDiv.textContent = fileContent;
+                fileContentDiv.style.padding = '32px';
+            } else {
+                console.error('Error al buscar el archivo:', response.statusText);
+            }
+        }
+
+        function filterFiles() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const fileItems = document.querySelectorAll('#file-list li');
+
+            fileItems.forEach(item => {
+                 const fileName = item.dataset.fileName.toLowerCase();
+                if (fileName.includes(searchInput)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        async function uploadFile() {
+            const form = document.getElementById('upload-form');
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Archivo subido con éxito');
+                fetchFiles(); // Refrescar la lista de archivos
+            } else {
+                alert('Error al subir el archivo');
+            }
+        }
+
+        async function executeCommand() {
+            const response = await fetch('/execute', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                alert('Comando ejecutado con éxito');
+            } else {
+                alert('Error al ejecutar el comando');
+            }
+        }
+
+        document.getElementById("cerrarSesionButton").addEventListener("click", function(event) {
+            event.preventDefault(); // Evita que el formulario se envíe
+            window.location.href = "inicio.html"; // Redirige a otra página
+        });
+
+        fetchFiles();
+    </script>
+</body>
+
+</html>
